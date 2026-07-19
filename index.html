@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Азим - объявления Авито (20 вариантов)</title>
+<style>
+  :root{
+    --bg:#f4f5f7; --card:#fff; --ink:#14161a; --muted:#6b7280;
+    --line:#e4e6eb; --accent:#5b5bd6; --accent-soft:#eceafd; --ok:#12a150;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0f1115; --card:#171a20; --ink:#e9eaee; --muted:#9aa1ad;
+           --line:#262a33; --accent:#8b8bf0; --accent-soft:#22243a; --ok:#3ecf7e; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+  .wrap{max-width:900px;margin:0 auto;padding:28px 18px 80px}
+  h1{font-size:24px;margin:0 0 6px}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 22px}
+  .tabs{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+  .tab{padding:9px 16px;border-radius:999px;border:1px solid var(--line);
+       background:var(--card);color:var(--ink);cursor:pointer;font-size:14px;font-weight:600}
+  .tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+        padding:16px 18px;margin-bottom:14px}
+  .num{display:inline-flex;align-items:center;justify-content:center;
+       width:24px;height:24px;border-radius:7px;background:var(--accent-soft);
+       color:var(--accent);font-size:12px;font-weight:700;margin-right:9px}
+  .head{display:flex;align-items:flex-start;gap:4px;flex-wrap:wrap}
+  .title{font-size:16px;font-weight:700;flex:1;min-width:220px}
+  .cnt{font-size:12px;color:var(--muted);white-space:nowrap;padding-top:3px}
+  .cnt b{color:var(--ok)}
+  .row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  button.cp{border:1px solid var(--line);background:transparent;color:var(--ink);
+     padding:8px 14px;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600}
+  button.cp:hover{border-color:var(--accent);color:var(--accent)}
+  button.cp.main{background:var(--accent);border-color:var(--accent);color:#fff}
+  button.cp.done{background:var(--ok);border-color:var(--ok);color:#fff}
+  details{margin-top:12px}
+  summary{cursor:pointer;color:var(--muted);font-size:13px;user-select:none}
+  .txt{white-space:pre-wrap;font-size:14px;line-height:1.6;margin-top:10px;
+       padding:14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);
+       overflow-x:auto}
+  .txt b{font-weight:700}
+  .note{background:var(--accent-soft);border:1px solid var(--line);border-radius:12px;
+        padding:14px 16px;font-size:13.5px;color:var(--ink);margin-bottom:22px}
+  .note b{font-weight:700}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Азим Чарыев - объявления Авито</h1>
+<p class="sub">20 вариантов: 10 под видеографа и 10 под рилсмейкера. Меняется только заголовок и его дубль в первой строке описания.</p>
+
+<div class="note">
+<b>Как пользоваться.</b> «Копировать заголовок» - вставляешь в поле заголовка на Авито. «Копировать текст» - вставляешь в описание: переносы, эмодзи и жирный сохраняются. В Телеграме при вставке жирный тоже останется.
+</div>
+
+<div class="tabs">
+  <button class="tab on" data-t="video">🎥 Видеограф (10)</button>
+  <button class="tab" data-t="reels">🎬 Рилсмейкер (10)</button>
+</div>
+
+<div id="list"></div>
+
+</div>
+
+<script>
+const VIDEO_TITLES = [
+ "Видеограф, видеооператор, видеосъемка",
+ "Видеограф, съемка имиджевых роликов для бизнеса",
+ "Видеограф, видеосъемка для бизнеса и рекламы",
+ "Видеограф, режиссер-оператор, съемка видео",
+ "Видеограф, документальный фильм, съемка",
+ "Видеограф, съемка бэкстейджа и видеосъемка",
+ "Видеограф, видео для бизнеса, съемка видео",
+ "Видеограф, съемка рекламы и промо роликов",
+ "Видеограф, съемка подкастов и интервью",
+ "Видеограф, корпоративное видео для бизнеса"
+];
+
+const REELS_TITLES = [
+ "Рилсмейкер, съемка Reels, видеосъемка",
+ "Рилсмейкер, съемка рилс для бизнеса",
+ "Рилсмейкер, Reels мейкер, съемка Reels",
+ "Рилсмейкер, съемка видео для соцсетей",
+ "Рилсмейкер, съемка рилс и Reels, видеограф",
+ "Рилсмейкер, видеосъемка для блогеров",
+ "Рилсмейкер, съемка Reels для бизнеса",
+ "Рилсмейкер, съемка бэкстейджа и рилс",
+ "Рилсмейкер, монтаж и съемка Reels, видео",
+ "Рилсмейкер, видео для бизнеса, съемка рилс"
+];
+
+const B = t => ({b:true, t});
+
+const VIDEO_BODY = [
+ "",
+ "🎬 Получите видео, которое не стыдно поставить на главную и показать клиентам",
+ "",
+ "📑 Цену фиксирую до старта - не вырастет по ходу съёмок",
+ "",
+ "🎥 Не собираете подрядчиков: сценарий, съёмка, свет, монтаж, цвет - в одних руках",
+ "",
+ "📩 Напишите - предложу концепцию под вашу задачу и сориентирую по срокам",
+ "",
+ "",
+ "Видеограф и видеооператор, 10 лет в профессии. Снимаю видео для бизнеса и личного бренда: имиджевые ролики, рекламу, документальные фильмы, интервью. Работаю по Москве и Московской области, выезжаю на объект. В другие города - в командировку, условия обсуждаем отдельно.",
+ "",
+ "",
+ B("🔥 ПОЧЕМУ ВЫБИРАЮТ МЕНЯ:"),
+ "",
+ "✔️ Не переснимаете дважды - за 10 лет видеосъёмки знаю, что сработает, ещё до съёмочного дня",
+ "",
+ "✔️ Не ищете отдельно сценариста, оператора и монтажёра - всё делаю я со своей командой",
+ "",
+ "✔️ Не доплачиваете за аренду техники - камеры, свет и стабилизация свои",
+ "",
+ "✔️ Не придумываете идею сами - концепцию предлагаю я, вы её просто утверждаете",
+ "",
+ "✔️ Не гадаете по цене - смета фиксируется в договоре до начала работ",
+ "",
+ "✔️ Не срываете запуск - сдаю материал к оговорённой дате",
+ "",
+ "✔️ Не получаете «просто красиво» - снимаю под задачу бизнеса, а не ради картинки",
+ "",
+ "",
+ B("⚡ ЧТО ЭТО ВАМ ДАЁТ:"),
+ "",
+ "Видео работает на вас годами - его не нужно переснимать через полгода",
+ "",
+ "Клиент видит ваш уровень до первого разговора и не торгуется",
+ "",
+ "Один съёмочный день закрывает и сайт, и соцсети, и презентации",
+ "",
+ "",
+ B("🎥 ЧТО СНИМАЮ:"),
+ "",
+ "Имиджевые ролики и видео для бизнеса",
+ "",
+ "Видеорекламу и промо",
+ "",
+ "Документальный фильм о компании, продукте или человеке",
+ "",
+ "Съёмку бэкстейджа: производство, площадка, рабочий процесс",
+ "",
+ "Интервью, подкасты, выступления",
+ "",
+ "Корпоративное видео и мероприятия",
+ "",
+ "Видео для сайта и маркетплейсов",
+ "",
+ "",
+ B("🎯 КАК Я РАБОТАЮ:"),
+ "",
+ "Обсуждаем задачу - предлагаю концепцию - фиксируем смету в договоре - готовлю сценарий и площадку - снимаем - монтаж и цветокоррекция - сдаю готовый материал",
+ "",
+ "",
+ "🎬 Дешёвая съёмка видео обходится дороже: ролик приходится переделывать, а деньги уже потрачены. Сделаю сразу так, чтобы возвращаться не пришлось.",
+ "",
+ "",
+ "📩 Напишите сейчас и добавьте объявление в избранное - расскажите про задачу, и я предложу концепцию ролика и сориентирую по бюджету и срокам."
+];
+
+const REELS_BODY = [
+ "",
+ "🎬 Получите ролики, которые приятно смотреть - без шаблонных перебивок",
+ "",
+ "💡 Не придумываете, что снимать - концепцию и сценарии беру на себя",
+ "",
+ "⏱ Один съёмочный день - готовый контент на месяц вперёд",
+ "",
+ "📩 Напишите - предложу идеи роликов под вашу нишу ещё до старта",
+ "",
+ "",
+ "Рилсмейкер и Reels мейкер, 10 лет в видеопроизводстве. Съёмка рилс для брендов, экспертов и блогеров: Reels, Shorts, клипы для VK. Работаю по Москве и Московской области. В другие города выезжаю в командировку, условия обсуждаем отдельно.",
+ "",
+ "",
+ B("🔥 ПОЧЕМУ ВЫБИРАЮТ МЕНЯ:"),
+ "",
+ "✔️ Не тратите неделю на съёмки - снимаем блоком за один день",
+ "",
+ "✔️ Не сидите над идеями - придумываю концепцию под ваш продукт и аудиторию",
+ "",
+ "✔️ Не стыдно выложить - видеосъёмка уровня продакшна, а не на коленке",
+ "",
+ "✔️ Не ищете монтажёра отдельно - монтаж, субтитры и звук на мне",
+ "",
+ "✔️ Не платите дважды за разные площадки - из одной съёмки получаете Reels, Shorts и Клипы",
+ "",
+ "✔️ Не гадаете по цене - стоимость фиксирую до начала работ",
+ "",
+ "✔️ Не получаете шаблон - у каждой ниши свой подход, копий чужих роликов не будет",
+ "",
+ "",
+ B("⚡ ЧТО ЭТО ВАМ ДАЁТ:"),
+ "",
+ "Ваш профиль выглядит дороже конкурентов, которые снимают сами на телефон",
+ "",
+ "Контент выходит регулярно, а вы к этому почти не подключаетесь",
+ "",
+ "Ролики не устаревают за неделю - их можно крутить месяцами",
+ "",
+ "",
+ B("🎥 ЧТО ВХОДИТ В РАБОТУ:"),
+ "",
+ "Концепция и сценарии под вашу нишу",
+ "",
+ "Съёмка Reels на профессиональную технику",
+ "",
+ "Съёмка бэкстейджа и вашего рабочего процесса",
+ "",
+ "Монтаж, субтитры, подбор звука",
+ "",
+ "Цветокоррекция",
+ "",
+ "Адаптация под Reels, Shorts и Клипы VK",
+ "",
+ "",
+ B("🎯 КАК Я РАБОТАЮ:"),
+ "",
+ "Обсуждаем задачу - придумываю концепцию - фиксируем смету - снимаем блоком за день - монтаж - отдаю готовые ролики",
+ "",
+ "",
+ "🎬 Ролик за копейки стоит дорого: его неприятно смотреть, и он портит впечатление о вас. Снимаю видео для бизнеса так, чтобы вам было что показать.",
+ "",
+ "",
+ "📩 Напишите сейчас и добавьте объявление в избранное - расскажите про свой проект, и я предложу концепцию роликов под вашу нишу."
+];
+
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+function buildLines(title, body){
+  return [B(title.toUpperCase())].concat(body);
+}
+function toPlain(lines){
+  return lines.map(l => typeof l === "string" ? l : l.t).join("\n");
+}
+function toHtml(lines){
+  return lines.map(l => typeof l === "string" ? esc(l) : "<b>"+esc(l.t)+"</b>").join("<br>");
+}
+
+async function copy(btn, plain, html){
+  try{
+    if(navigator.clipboard && window.ClipboardItem){
+      await navigator.clipboard.write([new ClipboardItem({
+        "text/html": new Blob([html], {type:"text/html"}),
+        "text/plain": new Blob([plain], {type:"text/plain"})
+      })]);
+    } else {
+      await navigator.clipboard.writeText(plain);
+    }
+  }catch(e){
+    const ta = document.createElement("textarea");
+    ta.value = plain; document.body.appendChild(ta); ta.select();
+    document.execCommand("copy"); ta.remove();
+  }
+  const old = btn.textContent;
+  btn.textContent = "Скопировано ✓"; btn.classList.add("done");
+  setTimeout(()=>{ btn.textContent = old; btn.classList.remove("done"); }, 1400);
+}
+
+function render(kind){
+  const titles = kind === "video" ? VIDEO_TITLES : REELS_TITLES;
+  const body   = kind === "video" ? VIDEO_BODY   : REELS_BODY;
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  titles.forEach((title, i) => {
+    const lines = buildLines(title, body);
+    const plain = toPlain(lines);
+    const html  = toHtml(lines);
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML =
+      '<div class="head">'+
+        '<span class="num">'+(i+1)+'</span>'+
+        '<span class="title">'+esc(title)+'</span>'+
+        '<span class="cnt"><b>'+title.length+'</b> / 50</span>'+
+      '</div>'+
+      '<div class="row">'+
+        '<button class="cp" data-a="t">Копировать заголовок</button>'+
+        '<button class="cp main" data-a="b">Копировать текст</button>'+
+      '</div>'+
+      '<details><summary>Показать текст объявления</summary>'+
+        '<div class="txt">'+html+'</div>'+
+      '</details>';
+
+    card.querySelector('[data-a="t"]').onclick = e => copy(e.target, title, esc(title));
+    card.querySelector('[data-a="b"]').onclick = e => copy(e.target, plain, html);
+    list.appendChild(card);
+  });
+}
+
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.onclick = () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("on"));
+    tab.classList.add("on");
+    render(tab.dataset.t);
+  };
+});
+
+render("video");
+</script>
+</body>
+</html>
