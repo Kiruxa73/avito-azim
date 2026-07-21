@@ -48,6 +48,16 @@
   .note{background:var(--accent-soft);border:1px solid var(--line);border-radius:12px;
         padding:14px 16px;font-size:13.5px;color:var(--ink);margin-bottom:22px}
   .note b{font-weight:700}
+  .title-in{flex:1;min-width:220px;font-size:16px;font-weight:700;color:var(--ink);
+       background:var(--bg);border:1px solid var(--line);border-radius:8px;
+       padding:8px 11px;font-family:inherit}
+  .title-in:focus{outline:none;border-color:var(--accent)}
+  .cnt.over b{color:#e5484d}
+  .ta-label{display:block;margin-top:13px;font-size:12.5px;color:var(--muted)}
+  .desc{width:100%;margin-top:6px;font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+       color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;
+       padding:12px 14px;resize:vertical;min-height:230px}
+  .desc:focus{outline:none;border-color:var(--accent)}
   .hidden{display:none}
 </style>
 </head>
@@ -58,7 +68,7 @@
 <p class="sub">20 вариантов: 10 под видеографа и 10 под рилсмейкера. Меняется только заголовок и его дубль в первой строке описания.</p>
 
 <div class="note">
-<b>Как пользоваться.</b> «Копировать заголовок» - вставляешь в поле заголовка на Авито. «Копировать текст» - вставляешь в описание: переносы, эмодзи и жирный сохраняются. В Телеграме при вставке жирный тоже останется.
+<b>Как пользоваться.</b> Заголовок и описание можно править прямо здесь - меняй текст, убирай лишние отступы под себя. «Копировать заголовок» и «Копировать текст» копируют то, что сейчас в полях. Первая строка описания - дубль заголовка, при правке заголовка она обновляется сама.
 </div>
 
 <div class="tabs">
@@ -349,69 +359,77 @@ const SETS = {
   reels_new: { titles: [REELS_TITLES[0]], body: REELS_BODY_NEW, isNew:true }
 };
 
-const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+// Собираем текст описания: дубль заголовка (как есть, без капса) + тело.
+// Двойные пустые строки схлопываем в одну, края чистим.
+function buildText(title, body){
+  const lines = [title, ""].concat(body.map(l => typeof l === "string" ? l : l.t));
+  const out = [];
+  for(const ln of lines){
+    if(ln === "" && (out.length === 0 || out[out.length-1] === "")) continue;
+    out.push(ln);
+  }
+  while(out.length && out[out.length-1] === "") out.pop();
+  return out.join("\n");
+}
 
-function buildLines(title, body){
-  return [B(title.toUpperCase())].concat(body);
-}
-function toPlain(lines){
-  return lines.map(l => typeof l === "string" ? l : l.t).join("\n");
-}
-function toHtml(lines){
-  return lines.map(l => typeof l === "string" ? esc(l) : "<b>"+esc(l.t)+"</b>").join("<br>");
-}
-
-async function copy(btn, plain, html){
+async function copyText(btn, text){
   try{
-    if(navigator.clipboard && window.ClipboardItem){
-      await navigator.clipboard.write([new ClipboardItem({
-        "text/html": new Blob([html], {type:"text/html"}),
-        "text/plain": new Blob([plain], {type:"text/plain"})
-      })]);
-    } else {
-      await navigator.clipboard.writeText(plain);
-    }
+    await navigator.clipboard.writeText(text);
   }catch(e){
     const ta = document.createElement("textarea");
-    ta.value = plain; document.body.appendChild(ta); ta.select();
+    ta.value = text; document.body.appendChild(ta); ta.select();
     document.execCommand("copy"); ta.remove();
   }
-  const old = btn.textContent;
+  const old = btn.dataset.label;
   btn.textContent = "Скопировано ✓"; btn.classList.add("done");
   setTimeout(()=>{ btn.textContent = old; btn.classList.remove("done"); }, 1400);
 }
 
 function render(kind){
   const set = SETS[kind];
-  const titles = set.titles;
-  const body   = set.body;
   document.getElementById("newnote").classList.toggle("hidden", !set.isNew);
   const list = document.getElementById("list");
   list.innerHTML = "";
 
-  titles.forEach((title, i) => {
-    const lines = buildLines(title, body);
-    const plain = toPlain(lines);
-    const html  = toHtml(lines);
-
+  set.titles.forEach((title, i) => {
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML =
       '<div class="head">'+
         '<span class="num">'+(i+1)+'</span>'+
-        '<span class="title">'+esc(title)+'</span>'+
-        '<span class="cnt"><b>'+title.length+'</b> / 50</span>'+
+        '<input class="title-in" type="text">'+
+        '<span class="cnt"><b></b> / 50</span>'+
       '</div>'+
       '<div class="row">'+
-        '<button class="cp" data-a="t">Копировать заголовок</button>'+
-        '<button class="cp main" data-a="b">Копировать текст</button>'+
+        '<button class="cp" data-a="t" data-label="Копировать заголовок">Копировать заголовок</button>'+
+        '<button class="cp main" data-a="b" data-label="Копировать текст">Копировать текст</button>'+
       '</div>'+
-      '<details><summary>Показать текст объявления</summary>'+
-        '<div class="txt">'+html+'</div>'+
-      '</details>';
+      '<label class="ta-label">Описание - правь и убирай отступы как нужно (первая строка = дубль заголовка):</label>'+
+      '<textarea class="desc" spellcheck="false"></textarea>';
 
-    card.querySelector('[data-a="t"]').onclick = e => copy(e.target, title, esc(title));
-    card.querySelector('[data-a="b"]').onclick = e => copy(e.target, plain, html);
+    const titleIn = card.querySelector(".title-in");
+    const desc    = card.querySelector(".desc");
+    const cntBox  = card.querySelector(".cnt");
+    const cntNum  = cntBox.querySelector("b");
+
+    titleIn.value = title;
+    desc.value    = buildText(title, set.body);
+
+    const refreshCount = () => {
+      cntNum.textContent = titleIn.value.length;
+      cntBox.classList.toggle("over", titleIn.value.length > 50);
+    };
+    refreshCount();
+
+    // Правка заголовка -> обновляем первую строку описания (дубль)
+    titleIn.addEventListener("input", () => {
+      refreshCount();
+      const rest = desc.value.split("\n").slice(1).join("\n");
+      desc.value = titleIn.value + "\n" + rest;
+    });
+
+    card.querySelector('[data-a="t"]').onclick = e => copyText(e.currentTarget, titleIn.value);
+    card.querySelector('[data-a="b"]').onclick = e => copyText(e.currentTarget, desc.value);
     list.appendChild(card);
   });
 }
