@@ -379,6 +379,8 @@ const store = {
   del(kind,i,f){ try{ localStorage.removeItem(this.k(kind,i,f)); }catch(e){} }
 };
 
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
 // Тело -> HTML для редактора: двойные пустые строки схлопываем, подзаголовки жирным.
 function bodyToHtml(body){
   const ls = body.map(l => typeof l === "string" ? {t:l,b:false} : {t:l.t,b:true});
