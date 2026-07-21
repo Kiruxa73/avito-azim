@@ -371,7 +371,7 @@ const SETS = {
 
 // Правки сохраняются в localStorage этого браузера. Версия — чтобы при
 // раскатке новых текстов старые сохранёнки не перекрывали новьё.
-const VERSION = "v3";
+const VERSION = "v4";
 const store = {
   k(kind,i,f){ return "azim:"+VERSION+":"+kind+":"+i+":"+f; },
   get(kind,i,f){ try{ return localStorage.getItem(this.k(kind,i,f)); }catch(e){ return null; } },
@@ -391,6 +391,11 @@ function bodyToHtml(body){
   }
   while(out.length && out[out.length-1].t === "") out.pop();
   return out.map(ln => ln.b ? "<b>"+esc(ln.t)+"</b>" : esc(ln.t)).join("<br>");
+}
+
+// Полное описание по умолчанию: дубль заголовка (первая строка) + пустая строка + тело.
+function defaultRich(title, body){
+  return esc(title) + "<br><br>" + bodyToHtml(body);
 }
 
 function flash(btn){
@@ -446,7 +451,7 @@ function render(kind){
       '</div>'+
       '<div class="editbar">'+
         '<button class="bbtn" title="Выделить жирным (Cmd/Ctrl+B)">Ж</button>'+
-        '<span class="lbl">Описание - правь текст, выделяй жирным. Первая строка при копировании = заголовок.</span>'+
+        '<span class="lbl">Описание - правь текст, выделяй жирным. Первая строка - дубль заголовка, меняется вместе с ним.</span>'+
         '<span class="saved">сохранено ✓</span>'+
         '<button class="reset">Сбросить</button>'+
       '</div>'+
@@ -462,7 +467,7 @@ function render(kind){
     const st = store.get(kind, i, "title");
     const sb = store.get(kind, i, "body");
     titleIn.value  = st != null ? st : title;
-    rich.innerHTML = sb != null ? sb : bodyToHtml(set.body);
+    rich.innerHTML = sb != null ? sb : defaultRich(title, set.body);
 
     const refreshCount = () => {
       cntNum.textContent = titleIn.value.length;
@@ -478,7 +483,11 @@ function render(kind){
 
     titleIn.addEventListener("input", () => {
       refreshCount();
+      // синхронизируем первую строку описания (дубль) с заголовком
+      const fc = rich.firstChild;
+      if(fc && fc.nodeType === 3){ fc.textContent = titleIn.value; }
       store.set(kind, i, "title", titleIn.value);
+      store.set(kind, i, "body", rich.innerHTML);
       showSaved();
     });
     rich.addEventListener("input", () => {
@@ -500,15 +509,15 @@ function render(kind){
       store.del(kind, i, "title");
       store.del(kind, i, "body");
       titleIn.value  = title;
-      rich.innerHTML = bodyToHtml(set.body);
+      rich.innerHTML = defaultRich(title, set.body);
       refreshCount();
     });
 
     // Копирование: заголовок отдельно; текст = заголовок + пустая строка + тело
     card.querySelector('[data-a="t"]').onclick = e => copyPlain(e.currentTarget, titleIn.value);
     card.querySelector('[data-a="b"]').onclick = e => {
-      const plain = titleIn.value + "\n\n" + rich.innerText.replace(/\n{3,}/g,"\n\n").replace(/\s+$/,"");
-      const html  = esc(titleIn.value) + "<br><br>" + rich.innerHTML;
+      const plain = rich.innerText.replace(/\n{3,}/g,"\n\n").replace(/\s+$/,"");
+      const html  = rich.innerHTML;
       copyRich(e.currentTarget, plain, html);
     };
 
